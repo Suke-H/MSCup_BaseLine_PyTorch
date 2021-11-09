@@ -3,12 +3,12 @@ from skimage.metrics import structural_similarity
 from PIL import Image
 import numpy as np
 import random
+from tqdm import tqdm
 
 from ESPCN_sample import ESPCN
 
 # Dataset creation（augumentation無し）
 def create_dataset():
-
     print("\n___Creating a dataset...")
     prc = ['/', '-', '\\', '|']
     cnt = 0
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     lr_imgs = lr_imgs.astype(np.float32) / 255.0
     lr_imgs = lr_imgs.transpose(0, 3, 1, 2) # channel first
 
-    for i, (lr, hr) in enumerate(zip(lr_imgs, hr_imgs)):
+    for i, (lr, hr) in enumerate(zip(tqdm(lr_imgs), hr_imgs)):
         
         lr = lr[np.newaxis, :, :, :]
         lr = torch.from_numpy(lr).to(device)
@@ -70,7 +70,7 @@ if __name__ == "__main__":
         re = re.transpose(0, 2, 3, 1) # channel last
         re = np.reshape(re, (1200, 1500, 3))
         re = re * 255.0
-        re = np.clip(re, 0.0, 255.0)
+        re = np.clip(re, 0.0, 255.0).astype(np.uint8)
         
         # ssim算出
         ssim = structural_similarity(hr, re, multichannel=True)
