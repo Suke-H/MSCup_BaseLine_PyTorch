@@ -1,0 +1,8 @@
+__pycache__
+evaluation
+output
+train
+uploadsample
+
+*.pth
+*.zip
